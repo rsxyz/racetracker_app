@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Edit Race</h2>
+
+<form method="post">
+
+    <fieldset>
+        <legend><strong>Race Details</strong></legend>
+
+        <label>Date:</label><br>
+        <input type="date" name="date" value="{{ race.date }}" required><br><br>
+
+        <label>Event Name:</label><br>
+        <input type="text" name="event_name" value="{{ race.event_name }}" required><br><br>
+
+        <label>Location:</label><br>
+        <input type="text" name="location" value="{{ race.location }}" required><br><br>
+
+        <label>Race Type:</label><br>
+        <input type="text" name="race_type" value="{{ race.race_type }}" readonly><br><br>
+
+        <label>Finish Time (HH:MM:SS):</label><br>
+        <input type="text" name="finish_time"
+               value="{{ race.finish_time }}"
+               placeholder="4:38:22"
+               required><br><br>
+
+        <label>Age:</label><br>
+        <input type="number" name="age" value="{{ race.age }}"><br><br>
+
+        <label>Weight:</label><br>
+        <input type="number" step="0.1" name="weight" value="{{ race.weight }}"><br>
+    </fieldset>
+
+    <br>
+
+    <fieldset>
+        <legend><strong>Marathon Splits (Optional)</strong></legend>
+
+        <table border="1" cellpadding="6" cellspacing="0">
+            <tr style="background:#f0f0f0;">
+                <th>Split</th>
+                <th>Distance (mi)</th>
+                <th>Time (HH:MM:SS)</th>
+            </tr>
+
+            {% for key, data in splits.items() %}
+            <tr>
+                <td>{{ data[0] }}</td>
+                <td>{{ "%.1f"|format(data[1]) }}</td>
+                <td>
+                    <input type="text"
+                        name="split_{{ key }}"
+                        value="{{ split_map.get(data[0], '') }}"
+                        placeholder="MM:SS or HH:MM:SS">
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+        <p style="font-size:0.9em; color:#555;">
+            Leave blank to remove a split.
+        </p>
+    </fieldset>
+
+    <br>
+
+    <button type="submit">Update Race</button>
+    <a href="{{ url_for('list_races') }}">Cancel</a>
+
+</form>
+
+{% endblock %}

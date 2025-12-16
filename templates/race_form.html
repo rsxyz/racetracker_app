@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Add Race</h2>
+<form method="post">
+
+Date: <input name="date"><br>
+Event: <input name="event_name"><br>
+Location: <input name="location"><br>
+
+Race Type:
+<select name="race_type">
+    <option value="marathon">Marathon</option>
+    <option value="half_marathon">Half</option>
+</select><br>
+
+Finish Time (HH:MM:SS):
+<input name="finish_time"><br>
+
+Age: <input name="age"><br>
+Weight: <input name="weight"><br>
+
+<h3>Marathon Splits (Optional)</h3>
+{% for label in splits %}
+    {{ label }} Time:
+    <input name="split_{{ label }}"><br>
+{% endfor %}
+
+<button type="submit">Save</button>
+</form>
+
+{% endblock %}

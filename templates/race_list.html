@@ -1,0 +1,125 @@
+<form method="get" class="row g-2 mb-4">
+
+  <div class="col-md-3">
+    <input type="text"
+           name="event"
+           class="form-control"
+           placeholder="Event name"
+           value="{{ request.args.get('event','') }}">
+  </div>
+
+  <div class="col-md-3">
+    <input type="text"
+           name="location"
+           class="form-control"
+           placeholder="Location"
+           value="{{ request.args.get('location','') }}">
+  </div>
+
+  <div class="col-md-2">
+    <input type="number"
+           name="year"
+           class="form-control"
+           placeholder="Year"
+           value="{{ request.args.get('year','') }}">
+  </div>
+
+  <div class="col-md-2">
+    <select name="race_type" class="form-select">
+      <option value="">All Types</option>
+      <option value="marathon"
+        {% if request.args.get('race_type') == 'marathon' %}selected{% endif %}>
+        Marathon
+      </option>
+      <option value="half_marathon"
+        {% if request.args.get('race_type') == 'half_marathon' %}selected{% endif %}>
+        Half Marathon
+      </option>
+      <option value="50k"
+        {% if request.args.get('race_type') == '50k' %}selected{% endif %}>
+        50K
+      </option>
+    </select>
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">Search</button>
+  </div>
+
+</form>
+
+<a href="/races?race_type=marathon" class="btn btn-outline-secondary btn-sm">
+  Marathons
+</a>
+<a href="/races?race_type=half_marathon" class="btn btn-outline-secondary btn-sm">
+  Half Marathons
+</a>
+<a href="/races?race_type=50k" class="btn btn-outline-secondary btn-sm">
+  50K
+</a>
+<a href="{{ url_for('list_races') }}" class="btn btn-secondary">
+  Clear
+</a>
+
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Races</h2>
+
+{% for race, splits in race_data %}
+
+
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+
+    <h5 class="card-title">{{ race.event_name }}</h5>
+
+    <h6 class="card-subtitle mb-2 text-muted">
+        {{ race.date }} – {{ race.location }}
+    </h6>
+
+    <p class="mb-2">
+        <strong>Finish:</strong> {{ race.finish_time }}
+        |
+        <strong>Pace:</strong> {{ race.pace }}
+    </p>
+
+    <!-- SPLITS TABLE HERE -->
+
+    <a href="{{ url_for('edit_race', race_id=race.id) }}"
+       class="btn btn-sm btn-primary">Edit</a>
+
+    <a href="{{ url_for('delete_race', race_id=race.id) }}"
+       class="btn btn-sm btn-danger"
+       onclick="return confirm('Delete this race?');">
+       Delete
+    </a>
+
+  </div>
+</div>
+
+<table class="table table-sm table-striped table-bordered mt-2">
+    <thead class="table-secondary">
+        <tr>
+            <th>Split</th>
+            <th>Time</th>
+            <th>Pace</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in splits %}
+        <tr>
+            <td>{{ s.label }}</td>
+            <td>{{ s.split_time }}</td>
+            <td>{{ s.pace }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+<hr>
+{% endfor %}
+
+{% endblock %}
